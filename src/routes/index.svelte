@@ -6,6 +6,7 @@
 	import UserHandle from '../components/DebianServer/UserHandle.svelte'
 	import Modal from '../components/UI/Modal.svelte'
 	let id = 1
+	let attempt = false
 	$: if(id >= $users.length) id = 0
 	let pagename = 'API Node Server (Debian localhost system)';
 	
@@ -13,6 +14,7 @@
 	// $: user = $users[id]
 	let userIsRoot = ''
 	let root = $users[id].root
+	let group = $users[id].group
 	let privileges = ''
 	let online = true
 	let isOn = true
@@ -43,10 +45,20 @@
 			}
 		}
 	}
+	$: if (attempt) {
+		setInterval( () => attempt = false, 5000 )
+	}
 
 	function handleAlert() {
 		alerts = ""
 		online = true 
+	}
+	function handleRoot () {
+		if (group === 'wheel') {
+			root = !root
+		} else {
+			attempt = true
+		}
 	}
 	$: {if(!online) {
 		isOn = false 
@@ -109,13 +121,17 @@
 			<div class="group">
 				<Card>
 					<p >user:  <span class={user !== '---' ? 'on' : 'off'}>{user}{userIsRoot}</span></p>
-					<p on:click={() => root = !root}>privileges:  <span class={ (root) ? "on" : "off"}>{privileges}</span></p>
+					<p on:click={handleRoot}>privileges:  <span class={ (root) ? "on" : "off"}>{privileges}</span>
+					</p>
 					{#if alerts }				 
 						<div class="alert" on:click={handleAlert}>{alerts}</div>
 					{/if}
 					<p on:click={() => online = !online}>test: <span class={ online ? "on" : "off"}>{online ? 'OK' : 'failed'}</span></p>
 					<p on:click={() => isOn = !isOn}>status: <span class={ isOn ? "on" : "off"}>{isOn? "on" : "off"}</span></p>
 					
+					{#if attempt }
+					<span class="root-alert">root not allowed</span>
+					{/if}
 				</Card>
 
 				<Card >
@@ -209,6 +225,20 @@
 		width: 1rem;
 		float:left;
 		cursor: pointer;
+	}
+
+	.root-alert {
+		/* display: inline; */
+		position: relative;
+		left: 15px;
+		font-size: 0.75rem;
+		background: rgba(0,0,0, 0.15);
+		border-radius: 2px;
+		width: auto;
+		
+		float: left;
+		color: red;
+		/* cursor: pointer; */
 	}
 	
 
