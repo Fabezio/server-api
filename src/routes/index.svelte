@@ -5,10 +5,13 @@
 	import Element from '../components/UI/CardElement.svelte'
 	import UserHandle from '../components/DebianServer/UserHandle.svelte'
 	import Modal from '../components/UI/Modal.svelte'
-	let pagename = 'API Node Server (Debian localhost system )';
-	let user = $users[0].name
+	let id = 0
+	$: if(id >= $users.length) id = 0
+	let pagename = 'API Node Server (Debian localhost system)';
+	
+	let user = $users[id].name
 	let userIsRoot = ''
-	let root = $users[0].root
+	let root = $users[id].root
 	let privileges = ''
 	let online = true
 	let isOn = true
@@ -52,6 +55,7 @@
 				alerts = null
 			}}
 	$: if(!upSigned) console.log('You have to sign up to get minimum privileges.')
+	$: console.log($users[id])
 	
 </script>
 
@@ -61,36 +65,42 @@
 
 <main>
 	{#if !upSigned}
-			<Modal>
-				<div class="title" slot='title'>
-					Fill the form below then click the Sign up button
+		<Modal>
+			<div class="title" slot='title'>
+				Fill the form below then click the Sign up button
+				
+			</div>
+			<div slot='content'>
+				<form action="">
 					
-				</div>
-				<div slot='content'>
-					<form action="">
-						
-						<input bind:value={username} cols="30" placeholder="name:">
-						{username} <br>
-						<input bind:value={job} placeholder="job:">
-						{job} <br>
-						<input bind:value={hobbies} placeholder="hobbies:">
-						{hobbies} <br>
-						<textarea bind:value name="" id="" cols="30" rows="2" placeholder="quotation here"></textarea>
-						{quotation}
-					</form>
-				</div>
+					<input bind:value={username} cols="30" placeholder="name:">
+					{username} <br>
+					<input bind:value={job} placeholder="job:">
+					{job} <br>
+					<input bind:value={hobbies} placeholder="hobbies:">
+					{hobbies} <br>
+					<textarea bind:value name="" id="" cols="30" rows="2" placeholder="quotation here"></textarea>
+					{quotation}
+				</form>
+			</div>
 
-				<button slot='footer' on:click={() => upSigned = true}>Sign up</button>
-			</Modal>
+			<button slot='footer' on:click={() => upSigned = true}>Sign up</button>
+		</Modal>
 	{:else}
 		<header>  
 			<h1 class="">{pagename}</h1>
 		</header>
+		{#if root}
+			<label>choose a user
+				<select name="" id="">
+					<option value=""></option>
+				</select>
+			</label>
+
+		{/if}
 		<section >
 			<div class="group">
 				<Card>
-					
-					
 					<p >user:  <span class={user !== '---' ? 'on' : 'off'}>{user}{userIsRoot}</span></p>
 					<p on:click={() => root = !root}>privileges:  <span class={ (root) ? "on" : "off"}>{privileges}</span></p>
 					{#if alerts }				 
@@ -100,15 +110,16 @@
 					<p on:click={() => isOn = !isOn}>status: <span class={ isOn ? "on" : "off"}>{isOn? "on" : "off"}</span></p>
 					
 				</Card>
-			
+				<Card >
 				{#if root}
-					<Card>
-						<p>add user</p>
 						<p on:click={() => dispModal = true}>see user info</p>
+						<p>add user</p>
 						<p>update user</p>
 						<p>delete user</p>
-					</Card>
+				{:else}
+						<p on:click={() => dispModal = true}>see user info</p>
 				{/if}
+					</Card>
 			</div>
 
 			{#if dispModal}
@@ -117,8 +128,10 @@
 						User Info
 					</div>
 					<div slot="content" class="data">
-						{#each $users as user}
-							<!-- content here -->
+						
+						{#each $users as user, i}
+							{#if i == id}
+								 <!-- content here -->
 								<div class="img">
 									<img src="./logos/{user.avatar}" alt="" />
 								</div>
@@ -135,6 +148,8 @@
 									<q>{user.adage}</q>
 									</p>
 								</div>
+							{/if}
+							<!-- content here -->
 							
 						{/each}
 					</div>
