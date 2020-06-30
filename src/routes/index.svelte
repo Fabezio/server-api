@@ -5,16 +5,21 @@
 	import Element from '../components/UI/CardElement.svelte'
 	import UserHandle from '../components/DebianServer/UserHandle.svelte'
 	import Modal from '../components/UI/Modal.svelte'
-	let id = 1
+	let id = 0
+	let newId = false
 	let attempt = false
 	$: if(id >= $users.length) id = 0
 	let pagename = 'API Node Server (Debian localhost system)';
 	
-	let user = $users[id].name
+	let user
+	let root
+	let group
+	$: user = $users[id].name
+	$: root = $users[id].root
+	$: group = $users[id].group
+
 	// $: user = $users[id]
 	let userIsRoot = ''
-	let root = $users[id].root
-	let group = $users[id].group
 	let privileges = ''
 	let online = true
 	let isOn = true
@@ -29,6 +34,23 @@
 	
 	let upSigned = true
 	let dispModal = false
+
+	function incrementId() {
+		if (id > $users.length ) id = 0
+		id++
+	}
+
+	function changeUser() {
+		newId = true
+		incrementId()
+		user = $users[id].name
+	// $: user = $users[id]
+		userIsRoot = ''
+		root = $users[id].root
+		group = $users[id].group
+		newId = false
+
+	}
 
 	$: {
 		if (!user.length) {
@@ -103,20 +125,20 @@
 		<header>  
 			<h1 class="">{pagename}</h1>
 		</header>
-		{#if root}
+		<!-- {#if root}
 			<label>choose a user : 
 				<select bind:value={$users[id].name} name="" id="">
 					{#each $users as user}
 						 <option value="">{user.name}</option>
 					{/each}
-					<!-- <option value=""></option> -->
+					
 				</select>
 			</label>
-		{:else if $users[id].name}
-			<label for="">You are logged as {$users[id].name}</label>
+		{:else if $users[id].name} -->
+			<label for="">You are logged as <span on:click={changeUser}> {$users[id].name} </span></label>
 			
 
-		{/if}
+		<!-- {/if} -->
 		<section >
 			<div class="group">
 				<Card>
