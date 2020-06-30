@@ -5,11 +5,12 @@
 	import Element from '../components/UI/CardElement.svelte'
 	import UserHandle from '../components/DebianServer/UserHandle.svelte'
 	import Modal from '../components/UI/Modal.svelte'
-	let id = 0
+	let id = 1
 	$: if(id >= $users.length) id = 0
 	let pagename = 'API Node Server (Debian localhost system)';
 	
 	let user = $users[id].name
+	// $: user = $users[id]
 	let userIsRoot = ''
 	let root = $users[id].root
 	let privileges = ''
@@ -55,7 +56,7 @@
 				alerts = null
 			}}
 	$: if(!upSigned) console.log('You have to sign up to get minimum privileges.')
-	$: console.log($users[id])
+	// $: console.log($users[id])
 	
 </script>
 
@@ -91,11 +92,17 @@
 			<h1 class="">{pagename}</h1>
 		</header>
 		{#if root}
-			<label>choose a user
-				<select name="" id="">
-					<option value=""></option>
+			<label>choose a user : 
+				<select bind:value={$users[id].name} name="" id="">
+					{#each $users as user}
+						 <option value="">{user.name}</option>
+					{/each}
+					<!-- <option value=""></option> -->
 				</select>
 			</label>
+		{:else if $users[id].name}
+			<label for="">You are logged as {$users[id].name}</label>
+			
 
 		{/if}
 		<section >
@@ -110,6 +117,7 @@
 					<p on:click={() => isOn = !isOn}>status: <span class={ isOn ? "on" : "off"}>{isOn? "on" : "off"}</span></p>
 					
 				</Card>
+
 				<Card >
 				{#if root}
 						<p on:click={() => dispModal = true}>see user info</p>
