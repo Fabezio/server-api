@@ -1,24 +1,22 @@
 <script>
 	import { users } from '../components/DebianServer/users-store'
-	
+	import UserHandle from '../components/DebianServer/UserHandle.svelte'
+
+	import Header from '../components/Layouts/Header.svelte'
+
 	import Card from '../components/UI/Card.svelte'
 	import Element from '../components/UI/CardElement.svelte'
-	import UserHandle from '../components/DebianServer/UserHandle.svelte'
 	import Modal from '../components/UI/Modal.svelte'
+
+	
 	let id = 0
 	let newId = false
 	let attempt = false
-	$: if(id >= $users.length) id = 0
 	let pagename = 'API Node Server (Debian localhost system)';
 	
 	let user
 	let root
 	let group
-	$: user = $users[id].name
-	$: root = $users[id].root
-	$: group = $users[id].group
-
-	// $: user = $users[id]
 	let userIsRoot = ''
 	let privileges = ''
 	let online = true
@@ -30,7 +28,6 @@
 	let hobbies = ''
 	let value = ''
 	let quotation =''
-	$: if (value.length) quotation = value
 	
 	let upSigned = true
 	let dispModal = false
@@ -52,6 +49,25 @@
 
 	}
 
+	function handleAlert() {
+		alerts = ""
+		online = true 
+	}
+	function handleRoot () {
+		if (group === 'wheel') {
+			root = !root
+		} else {
+			attempt = true
+		}
+	}
+
+	$: if(id >= $users.length) id = 0
+	$: user = $users[id].name
+	$: root = $users[id].root
+	$: group = $users[id].group
+
+	// $: user = $users[id]
+	$: if (value.length) quotation = value
 	$: {
 		if (!user.length) {
 			user = '---'
@@ -70,18 +86,6 @@
 	$: if (attempt) {
 		setInterval( () => attempt = false, 5000 )
 	}
-
-	function handleAlert() {
-		alerts = ""
-		online = true 
-	}
-	function handleRoot () {
-		if (group === 'wheel') {
-			root = !root
-		} else {
-			attempt = true
-		}
-	}
 	$: {if(!online) {
 		isOn = false 
 				alerts = '!'
@@ -95,7 +99,7 @@
 </script>
 
 <svelte:head>
-<title>{pagename}</title>
+	<title>{pagename}</title>
 </svelte:head>
 
 <main>
@@ -119,26 +123,24 @@
 				</form>
 			</div>
 
-			<button slot='footer' on:click={() => upSigned = true}>Sign up</button>
+			<button class="glass" slot='footer' on:click={() => upSigned = true}>Sign up</button>
 		</Modal>
 	{:else}
-		<header>  
-			<h1 class="">{pagename}</h1>
-		</header>
+		<Header {pagename} />
+
 		<!-- {#if root}
 			<label>choose a user : 
 				<select bind:value={$users[id].name} name="" id="">
 					{#each $users as user}
 						 <option value="">{user.name}</option>
 					{/each}
-					
 				</select>
 			</label>
 		{:else if $users[id].name} -->
 			<label for="">You are logged as <span on:click={changeUser}> {$users[id].name} </span></label>
+		<!-- {/if} -->
 			
 
-		<!-- {/if} -->
 		<section >
 			<div class="group">
 				<Card>
@@ -225,21 +227,26 @@
 		text-shadow: 1px 1px 1px rgba(0,0,0,0.95)
 	} */
 
-	header {
-		margin: 4rem;
-		clear: both;
-	}
+	
 
 	p {
 		text-align: justify;
 		/* color: lightgray; */
 	}
 	
-	
+	button {
+	position: absolute;
+	right: 2rem;
+	/* background: var(--iridescent); */
+	/* color: var(--iridescent); */
+	font-size: 1rem;
+	border-radius: 3px;
+}
 	
 	.group {
 		display: flex;
 	}
+
 	.alert {
 		font-size: 0.75rem;
 		background: rgba(255,0,0, 0.75);
@@ -271,10 +278,7 @@
 	.img, .list {
 		padding-left: 0 4rem;
 	}
-	button {
-		position: absolute;
-		right: 2rem;
-	}
+	
 	.title {
 		color: whitesmoke;
 		text-shadow: 0px 0px 1px black;
