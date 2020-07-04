@@ -4,8 +4,8 @@
 
 <style>
 	nav {
-		border-bottom: 1px solid rgba(255,62,0,0.1);
-		font-weight: 300;
+		border-bottom: 1px solid hsla(165, 100%, 50%, 0.09);
+		font-weight: 200;
 		padding: 0 1em;
 	}
 
@@ -24,6 +24,7 @@
 	li {
 		display: block;
 		float: left;
+		font-variant: small-caps;
 	}
 
 	[aria-current] {
@@ -36,14 +37,14 @@
 		content: '';
 		width: calc(100% - 1em);
 		height: 2px;
-		background-color: rgb(255,62,0);
+		background-color: hsla(165, 100%, 50%, 0.5);
 		display: block;
 		bottom: -1px;
 	}
 
 	a {
 		text-decoration: none;
-		padding: 1em 0.5em;
+		padding: 0.75em 0.75em;
 		display: block;
 	}
 </style>

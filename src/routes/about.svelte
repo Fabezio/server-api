@@ -1,5 +1,5 @@
 <script>
-	import Header from '../components/Layouts/Header.svelte'
+	import Header from '../components/Blocks/Header.svelte'
 	// export let pagename
 </script>
 

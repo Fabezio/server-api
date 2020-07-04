@@ -1,10 +1,11 @@
 <script>
 	import { images, sudoImg } from '../components/DebianServer/images-store'
-	import Nav from '../components/Layouts/Nav.svelte';
-	import Footer from '../components/Layouts/Footer.svelte'
+	// import { users } from '../components/DebianServer/users-store'
+	import Nav from '../components/Blocks/Nav.svelte';
+	import Footer from '../components/Blocks/Footer.svelte'
 
 	export let segment;
-	export let root
+	export let root = false
 	let rndImg = Math.floor(Math.random() * $images.length)
 	let rndRootImg = Math.floor(Math.random() * $sudoImg.length)
 	// $: console.log($images)

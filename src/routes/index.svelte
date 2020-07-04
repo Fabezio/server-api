@@ -1,8 +1,9 @@
 <script>
 	import { users } from '../components/DebianServer/users-store'
-	import UserHandle from '../components/DebianServer/UserHandle.svelte'
+	// import UserHandle from '../components/DebianServer/UserHandle.svelte'
+	import UserInfo from '../components/DebianServer/UserInfo.svelte'
 
-	import Header from '../components/Layouts/Header.svelte'
+	import Header from '../components/Blocks/Header.svelte'
 
 	import Card from '../components/UI/Card.svelte'
 	import Element from '../components/UI/CardElement.svelte'
@@ -12,7 +13,7 @@
 	let id = 0
 	let newId = false
 	let attempt = false
-	let pagename = 'API Node Server (Debian localhost system)';
+	let pagename = 'Server access tester';
 	
 	let user
 	let root
@@ -31,6 +32,7 @@
 	
 	let upSigned = true
 	let dispModal = false
+	let violationCounter = 0
 
 	function incrementId() {
 		if (id > $users.length ) id = 0
@@ -84,7 +86,13 @@
 		}
 	}
 	$: if (attempt) {
-		setInterval( () => attempt = false, 5000 )
+		setInterval( () => attempt = false, 3000 )
+
+		violationCounter += 1
+	}
+	$: if (violationCounter === 3) {
+		upSigned = false
+		alert ('too many root attemps')
 	}
 	$: {if(!online) {
 		isOn = false 
@@ -153,21 +161,27 @@
 					<p on:click={() => online = !online}>test: <span class={ online ? "on" : "off"}>{online ? 'OK' : 'failed'}</span></p>
 					<p on:click={() => isOn = !isOn}>status: <span class={ isOn ? "on" : "off"}>{isOn? "on" : "off"}</span></p>
 					
+					<div id="alerts-list">
 					{#if attempt }
-					<span class="root-alert">root not allowed</span>
+					<!-- {#each violationCounter}
+					{/each} -->
+						 <!-- content here -->
+						<span class="root-alert">root not allowed {violationCounter}</span>
 					{/if}
+					</div>
 				</Card>
 
 				<Card >
-				{#if root}
+					<UserInfo on:displaymodal={() => dispModal = true} {root} />
+					<!-- {#if root}
 						<p on:click={() => dispModal = true}>see user info</p>
 						<p>add user</p>
 						<p>update user</p>
 						<p>delete user</p>
-				{:else}
-						<p on:click={() => dispModal = true}>see user info</p>
-				{/if}
-					</Card>
+					{:else}
+							<p on:click={() => dispModal = true}>see user info</p>
+					{/if} -->
+				</Card>
 			</div>
 
 			{#if dispModal}
@@ -229,10 +243,7 @@
 
 	
 
-	p {
-		text-align: justify;
-		/* color: lightgray; */
-	}
+	
 	
 	button {
 	position: absolute;
@@ -247,6 +258,9 @@
 		display: flex;
 	}
 
+	#alerts-list {
+		min-height: 2rem;
+	}
 	.alert {
 		font-size: 0.75rem;
 		background: rgba(255,0,0, 0.75);
@@ -260,13 +274,14 @@
 		/* display: inline; */
 		position: relative;
 		left: 15px;
-		font-size: 0.75rem;
+		/* font-size: 0.75rem; */
 		background: rgba(0,0,0, 0.15);
 		border-radius: 2px;
 		width: auto;
 		
 		float: left;
 		color: red;
+		/* transition:  */
 		/* cursor: pointer; */
 	}
 	
@@ -275,8 +290,9 @@
 		width: 200px;
 		float:left;
 	}
-	.img, .list {
-		padding-left: 0 4rem;
+	.img,
+	.list {
+		padding-left: 4rem;
 	}
 	
 	.title {

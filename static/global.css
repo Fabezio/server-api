@@ -28,6 +28,10 @@ code {
 	padding: 0.2em 0.4em;
 	border-radius: 2px;
 }
+p {
+	text-align: justify;
+	/* color: lightgray; */
+}
 
 /* xtra
  */
